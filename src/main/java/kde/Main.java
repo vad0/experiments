@@ -1,4 +1,5 @@
-import weka.estimators.UnivariateDensityEstimator;
+package kde;
+
 import weka.estimators.UnivariateKernelEstimator;
 
 import java.time.Duration;

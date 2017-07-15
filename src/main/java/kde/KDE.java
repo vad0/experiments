@@ -1,3 +1,5 @@
+package kde;
+
 public abstract class KDE {
     protected final Kernel kernel;
     protected final Array2d array;

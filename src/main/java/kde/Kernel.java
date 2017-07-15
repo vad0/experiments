@@ -1,3 +1,5 @@
+package kde;
+
 /**
  * Created by vadim on 18.03.17.
  */

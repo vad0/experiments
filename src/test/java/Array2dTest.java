@@ -1,3 +1,4 @@
+import kde.Array2d;
 import org.junit.Test;
 
 /**

@@ -1,23 +1,9 @@
-import sun.misc.Unsafe;
-
-import java.lang.reflect.Field;
+package kde;
 
 /**
  * Created by vadim on 18.03.17.
  */
 public class Array2d {
-    private static final long DOUBLE_SIZE = 8;
-    private static final Unsafe UNSAFE;
-
-    static {
-        try {
-            Field field = Unsafe.class.getDeclaredField("theUnsafe");
-            field.setAccessible(true);
-            UNSAFE = (Unsafe) field.get(null);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private int columns;
     private long address;
@@ -27,15 +13,15 @@ public class Array2d {
     public Array2d(int capacity, int columns) {
         this.columns = columns;
         this.capacity = capacity;
-        this.address = UNSAFE.allocateMemory(DOUBLE_SIZE * columns * capacity);
+        this.address = Utils.UNSAFE.allocateMemory(Utils.DOUBLE_SIZE * columns * capacity);
     }
 
     public double get(int row, int column) {
-        return UNSAFE.getDouble(address + DOUBLE_SIZE * (columns * row + column));
+        return Utils.UNSAFE.getDouble(address + Utils.DOUBLE_SIZE * (columns * row + column));
     }
 
     private void putUnchecked(int row, int column, double value) {
-        long offset = DOUBLE_SIZE * (columns * row + column);
+        long offset = Utils.DOUBLE_SIZE * (columns * row + column);
         assert row >= 0 && column >= 0 && offset >= 0;
 /*
         System.out.println(String.format(
@@ -47,7 +33,7 @@ public class Array2d {
                 column,
                 value));
 */
-        UNSAFE.putDouble(address + offset, value);
+        Utils.UNSAFE.putDouble(address + offset, value);
 //        System.out.println("Ok");
     }
 
@@ -78,13 +64,13 @@ public class Array2d {
         }
         // double up
 //        System.out.println("Current capacity " + capacity);
-        long currentBytes = DOUBLE_SIZE * columns * capacity;
+        long currentBytes = Utils.DOUBLE_SIZE * columns * capacity;
 //        System.out.println(String.format("Trying to allocate %d bytes", currentBytes * 2));
-        long newAddress = UNSAFE.allocateMemory(currentBytes * 2);
+        long newAddress = Utils.UNSAFE.allocateMemory(currentBytes * 2);
 //        System.out.println("Copying data to new location");
-        UNSAFE.copyMemory(address, newAddress, currentBytes);
+        Utils.UNSAFE.copyMemory(address, newAddress, currentBytes);
 //        System.out.println("Freeing old memory location");
-        UNSAFE.freeMemory(address);
+        Utils.UNSAFE.freeMemory(address);
 //        System.out.println("Done");
         address = newAddress;
         capacity *= 2;
